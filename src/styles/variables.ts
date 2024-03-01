@@ -1,0 +1,5 @@
+export const COLORS = {
+  TEXT_PRIMARY: "#FFF",
+  BG_PRIMARY: "#F3F3F3",
+  BG_SECONDARY: "#4199FF",
+};
