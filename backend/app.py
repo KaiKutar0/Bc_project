@@ -1,67 +1,53 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
-import sqlite3
 import base64
 from flask import request
-from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
-database_file = 'techDrawing.db'
-table_name = 'drawing'
-
-def read_data_from_database(database_file, table_name, term):
-    data = []
-    result = []
-    try:
-        conn = sqlite3.connect(database_file)
-        cursor = conn.cursor()
-
-        if term == None:
-            cursor.execute(f"SELECT id, name, image FROM {table_name}")
-        else:
-            cursor.execute(f"SELECT id, name, image FROM {table_name} WHERE name LIKE ?", ('%' + term + '%',))
-
-
-
-        data = cursor.fetchall()
-
-        for row in data:
-            id, name, image  = row
-            decoded_image = base64.b64encode(image).decode('utf-8')
-            result.append((id, name, decoded_image))
-        return result
-    
-    except sqlite3.Error as e:
-        print("Error reading data from SQLite database:", e)
-
-    finally:
-        if conn:
-            conn.close()
-    
 app = Flask(__name__)   
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///techDrawing.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///techDrawing.db'
 
-# db = SQLAlchemy(app)
+from models.drawing import db
+from models.drawing import Drawing
+from models.drawing import ElementType
 
-# class drawing(db.Model):
-#    id = db.Column(db.Integer, primary_key = True)
-#    name = db.Column(db.Text)
-#    image = db.Column(db.BLOB)
-
-# def __init__(self, name):
-#    self.name = name
+migrate = Migrate(app, db)
 
 CORS(app, resources={r'/*': {'origins': '*'}})
 
 @app.route('/')
 def home():
-    # drawings = drawing.query.all()
-    return {'message': 'drawings'}
-
-@app.route('/drawing')
-def fetch_table():
     term = request.args.get('term')
-    # cathegory=request.args.get('term')
-    return {'drawings': read_data_from_database(database_file, table_name, term)}
+    lang = request.args.get('lang')
+
+    return fetch_table(term, lang)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
+
+def fetch_table(term, lang):
+    if term == None:
+        data = db.session.execute(db.select(Drawing).order_by(Drawing.id)).all() 
+    else:
+        if lang == 'en':
+            data = db.session.execute(db.select(Drawing).filter(db.func.lower(Drawing.name_en).like(f'%{term.lower()}%')).order_by(Drawing.id)).all()
+        if lang == 'sk':
+            data = db.session.execute(db.select(Drawing).filter(db.func.lower(Drawing.name_sk).like(f'%{term.lower()}%')).order_by(Drawing.id)).all()
+        if lang == 'ua':
+            data = db.session.execute(db.select(Drawing).filter(db.func.lower(Drawing.name_ua).like(f'%{term.lower()}%')).order_by(Drawing.id)).all()
+
+    response = []
+    for record in data:
+        for row in record:
+            response.append({
+                'id' : row.id,
+                'name_en' : row.name_en,
+                'name_sk' : row.name_sk,
+                'name_ua' : row.name_ua,
+                'type' : ElementType(row.element_type).name,
+                'description_en' : row.description_en,
+                'description_sk' : row.description_sk,
+                'description_ua' : row.description_ua,
+                'image' : base64.b64encode(row.image).decode('utf-8')
+            })
+    return response
