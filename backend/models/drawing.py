@@ -23,40 +23,36 @@ class ElementType(enum.Enum):
 
 class Drawing(db.Model):
     id = db.Column(db.Integer, primary_key = True)
-
     name_en = db.Column(db.String(128))
     name_sk = db.Column(db.String(128))
     name_ua = db.Column(db.String(128))
-
     element_type = db.Column(db.Enum(ElementType))
-
     image = db.Column(db.LargeBinary)
-
     description_en = db.Column(db.String(500))
     description_sk = db.Column(db.String(500))
     description_ua = db.Column(db.String(500))
 
 
     def __repr__(self):
-        return '%r' % [self.id, 
-                       self.name_en, 
-                       self.name_sk,
-                       self.name_ua,
-                       self.element_type,
-                       self.image, 
-                       self.description_en,
-                       self.description_sk,
-                       self.description_ua]
-   
+        return '%r' %   [self.id, 
+                    self.name_en, 
+                    self.name_sk,
+                    self.name_ua,
+                    self.element_type,
+                    self.image, 
+                    self.description_en,
+                    self.description_sk,
+                    self.description_ua]
+
     def __init__(self, 
-                 name_en, 
-                 name_sk,
-                 name_ua,
-                 element_type,
-                 image, 
-                 description_en,
-                 description_sk,
-                 description_ua):
+                name_en, 
+                name_sk,
+                name_ua,
+                element_type,
+                image, 
+                description_en,
+                description_sk,
+                description_ua):
         self.name_en = name_en
         self.name_sk = name_sk
         self.name_ua = name_ua
@@ -65,3 +61,27 @@ class Drawing(db.Model):
         self.description_en = description_en
         self.description_sk = description_sk
         self.description_ua = description_ua
+
+class User_Drawing(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(128))
+    date = db.Column(db.DateTime(timezone=False))
+    notes = db.Column(db.String(500)) 
+    photo = db.Column(db.LargeBinary)
+
+    def __repr__(self):
+        return "%r" % [self.id,
+                       self.name,
+                       self.date,
+                       self.notes,
+                       self.photo
+                       ]
+    def __init__(self,
+                 name,
+                 date,
+                 notes,
+                 photo):
+        self.name = name
+        self.date = date
+        self.notes = notes
+        self.photo = photo

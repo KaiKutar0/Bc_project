@@ -1,5 +1,5 @@
 import { Text, View, Image } from "react-native";
-import prettifyNames from "../helpers/prettifyNames";
+import { prettifyNames } from "../helpers/helpers";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 
@@ -37,13 +37,14 @@ export function DrawingItem({ item }: { item: Drawing }) {
     <View
       style={{
         marginBottom: 40,
-        borderTopWidth: 0.5,
+        marginLeft: 30,
+        marginRight: 30,
+        borderBottomWidth: 0.5,
         borderColor: "gray" /*backgroundColor: "blue"*/,
       }}
     >
       <Text
         style={{
-          marginLeft: 30,
           marginBottom: 15,
           marginTop: 5,
           fontSize: 30,
@@ -58,7 +59,7 @@ export function DrawingItem({ item }: { item: Drawing }) {
       <View
         style={{
           // backgroundColor: "green",
-          width: 391,
+          width: 345,
           alignItems: "center",
           paddingBottom: 10,
           paddingTop: 10,
@@ -66,7 +67,7 @@ export function DrawingItem({ item }: { item: Drawing }) {
       >
         <Image
           style={{
-            width: 340,
+            width: 320,
             height: 180,
             resizeMode: "contain",
             borderColor: "black",
@@ -82,7 +83,7 @@ export function DrawingItem({ item }: { item: Drawing }) {
       <Text>{"type:\n" + item.type}</Text>
       <Text
         style={{
-          marginLeft: 30,
+          // marginLeft: 30,
           marginBottom: 15,
           marginTop: 5,
           fontSize: 15,

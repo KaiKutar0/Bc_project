@@ -4,6 +4,7 @@ import { FlatList, SafeAreaView, TextInput } from "react-native";
 import DrawingItem from "../components/DrawingItem";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
+import { getThisIP, ip } from "../helpers/helpers";
 
 enum ElementType {
   GRIPPER = "Gripper",
@@ -37,9 +38,21 @@ function DocumentationScreen() {
   const [data, setData] = useState<Drawing[]>([]);
   const [term, setTerm] = useState("");
   const { t } = useTranslation();
+  // const [ip, setIp] = useState();
 
+  // useEffect(() => {
+  //   const fetchIp = async () => {
+  //     try {
+  //       const ip = await getThisIP();
+  //       setIp(ip);
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   };
+  //   fetchIp();
+  // }, []);
   useEffect(() => {
-    fetch(`http://127.0.0.1:5000/?term=${term}&lang=${i18next.language}`)
+    fetch(`http://${ip}:5000/load-docs?term=${term}&lang=${i18next.language}`)
       .then((response) => response.json())
       .then((data) => setData(data))
       .catch((error) => console.error(error));

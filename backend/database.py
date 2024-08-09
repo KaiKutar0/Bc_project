@@ -1,13 +1,15 @@
 from app import app as app
-from models.drawing import db as db, Drawing
+from models.drawing import db as db, Drawing, User_Drawing
 import sqlite3
 from flask_sqlalchemy import SQLAlchemy
 from models.drawing import ElementType
+from datetime import datetime
+
 ######
 """
 UPDATE 
 """
-######
+##########
 img_name = "/home/yurii/Pictures/Screenshots/30AEQ"
 name_en = 'Plug'
 name_sk = 'Zátky'
@@ -16,8 +18,14 @@ element_type = ElementType.LINE_EQUIPMENT.name
 description_en = "Plug - A type of fitting used to close or block an opening in a system or component. Plugs are typically inserted into a port, hole, or pipe to prevent the flow of fluid, gas, or other substances. They come in various shapes, sizes, and materials to suit different applications. Plugs may have threaded, push-in, or compression designs, providing a secure and leak-proof seal when properly installed. They are commonly used in plumbing, pneumatic systems, hydraulic systems, and electrical applications for sealing unused ports, conducting pressure tests, or temporarily blocking flow."
 description_sk = 'Zátky - Typ spojovacieho prvku používaného na zatváranie alebo blokovanie otvoru v systéme alebo komponente. Zátky sa zvyčajne vkladajú do portu, otvoru alebo rúry, aby sa zabránilo prúdeniu tekutiny, plynu alebo iných látok. Existujú v rôznych tvaroch, veľkostiach a materiáloch, aby vyhovovali rôznym aplikáciám. Zátky môžu mať závitový, stlačovací alebo stláčací dizajn, poskytujúci bezpečné a tesné utvorenie tesnenia pri správnej inštalácii. Sú bežne používané v hydraulických systémoch, pneumatických systémoch, elektrických aplikáciách alebo iných oblastiach, na utvorenie tesného uzatvorenia nevyužitých portov, vykonávanie tlakových testov alebo dočasné blokovanie prúdenia.'
 description_ua = "Заглушка - Тип з'єднувального елементу, який використовується для закриття або блокування отвору в системі або компоненті. Заглушки зазвичай вставляються в порт, отвір або трубу для запобігання потоку рідини, газу або інших речовин. Вони існують у різних формах, розмірах та матеріалах для відповідності різним застосуванням. Заглушки можуть мати різні типи кріплення, такі як різьблення, натиск або стиснення, забезпечуючи надійне та герметичне ущільнення при належній установці. Вони широко використовуються в гідравлічних системах, пневматичних системах, електричних апаратах та інших галузях для ущільнення не використовуваних портів, проведення випробувань на міцність або тимчасового блокування потоку."
+###########
+photo_name = '/home/yurii/Pictures/BC/test2'
+name = 'mocked2'
+date = datetime.now()
+notes = "this photo is mocked for testing purposes #2"
+###########
 
-def add():
+def add_doc():
     with open(f"{img_name}.png", 'rb') as file:
         image_data = file.read()
     with app.app_context():
@@ -38,9 +46,21 @@ def update(id):
         # db.session.commit()
         print(upd)
 
+######################################################################################################
+        
+def add_mocked():
+    with open(f"{photo_name}.png", 'rb') as file:
+        photo_data = file.read()
+    with app.app_context():
 
+        item = User_Drawing(name, date, notes, sqlite3.Binary(photo_data))
+
+        db.session.add(item)
+        db.session.commit()
 #uncomment when adding an item
-add()
+        
+# add_doc()
+add_mocked()
 
 #uncomment when update an item
 # update(1)

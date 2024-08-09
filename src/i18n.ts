@@ -5,6 +5,7 @@ import skJSON from "./locale/sk.json";
 import uaJSON from "./locale/ua.json";
 
 i18n.use(initReactI18next).init({
+  compatibilityJSON: "v3",
   resources: { en: { ...enJSON }, sk: { ...skJSON }, ua: { ...uaJSON } },
   lng: "en",
 });
